@@ -3,6 +3,7 @@ package com.kodnest.controller;
 import com.kodnest.dto.ItemRequest;
 import com.kodnest.dto.ItemResponse;
 import com.kodnest.dto.QuantityRequest;
+import com.kodnest.dto.StockMovementResponse;
 import com.kodnest.service.ItemService;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -39,6 +40,11 @@ public class ItemController {
 
     @PutMapping("/{id}/quantity")
     public ItemResponse updateQuantity(@PathVariable Long id, @Valid @RequestBody QuantityRequest request) {
-        return itemService.updateQuantity(id, request.quantity());
+        return itemService.updateQuantity(id, request.quantity(), request.reason());
+    }
+
+    @GetMapping("/{id}/movements")
+    public List<StockMovementResponse> movements(@PathVariable Long id) {
+        return itemService.findMovements(id);
     }
 }

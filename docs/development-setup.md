@@ -24,9 +24,10 @@ $env:DB_PASSWORD = 'your-local-password'
 
 ## Start the API
 
-From the project root:
+From the `backend` folder:
 
 ```powershell
+cd backend
 mvn spring-boot:run
 ```
 

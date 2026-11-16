@@ -4,9 +4,9 @@ StockWise is a small-shop inventory and sales app. The backend is Java with Spri
 
 ## Current project status
 
-- The backend supports listing and creating catalog items, input validation, duplicate-name errors, and stock quantity updates.
-- The frontend has a responsive StockWise workspace, a live product catalog, and an inventory page for adjusting stock.
-- Stock movements, dashboard data, sales, and sign-in are planned for later feature increments.
+- The backend supports listing and creating catalog items, input validation, duplicate-name errors, reorder levels, stock quantity updates, and stock-movement history.
+- The frontend has a responsive StockWise workspace, a live product catalog, a dashboard with low-stock alerts and recent activity, and an inventory page for recorded stock adjustments.
+- Sales and sign-in are planned for later feature increments.
 
 ## Technology stack
 
@@ -41,9 +41,10 @@ $env:DB_PASSWORD = 'your-local-password'
 
 ## Run locally
 
-Start the backend from the project root in one terminal:
+Start the backend from the `backend` folder in one terminal:
 
 ```powershell
+cd backend
 mvn spring-boot:run
 ```
 
@@ -59,9 +60,10 @@ Open the Vite URL shown in the terminal, usually `http://localhost:5173`. The fr
 
 ## Run checks
 
-From the project root, run the backend tests:
+From the `backend` folder, run the backend tests:
 
 ```powershell
+cd backend
 mvn test
 ```
 
@@ -82,16 +84,20 @@ Send a `POST` request to `http://localhost:9090/api/items` with JSON:
 {
   "name": "Sample item",
   "description": "An item created through the API",
-  "quantity": 12
+  "quantity": 12,
+  "reorderLevel": 3
 }
 ```
 
 A successful request returns `201 Created`. A blank name is rejected by request validation. A duplicate name, ignoring case and surrounding spaces, returns `409 Conflict` with an `ITEM_ALREADY_EXISTS` error code.
 
-Update an item's stock with `PUT http://localhost:9090/api/items/{id}/quantity` and a non-negative whole number:
+Update an item's stock with `PUT http://localhost:9090/api/items/{id}/quantity` and a non-negative whole number. The API records the difference as a stock movement when the quantity changes:
 
 ```json
 {
-  "quantity": 14
+  "quantity": 14,
+  "reason": "New delivery"
 }
 ```
+
+Get live dashboard data from `GET /api/dashboard`, including catalog and low-stock counts, today's movement count, low-stock products, and recent movements. Get an individual product's full history from `GET /api/items/{id}/movements`.

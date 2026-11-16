@@ -2,7 +2,7 @@
 
 ## Scope
 
-This project is a Java Spring Boot REST API backed by MySQL. It lists and creates catalog items for the React frontend.
+This project is a Java Spring Boot REST API backed by MySQL. It manages catalog items, reorder levels, and a stock-movement audit trail for the React frontend.
 
 ## Technology flow
 
@@ -16,15 +16,15 @@ flowchart LR
 
 ## Responsibilities
 
-- **Controller:** exposes catalog list/create endpoints and a stock quantity update endpoint, validates requests, and returns HTTP responses.
-- **Service:** lists items in name order, rejects duplicate names without case sensitivity, saves valid items, updates stock quantities, and maps them to response DTOs.
-- **Repository:** uses Spring Data JPA to query and save `Item` records.
+- **Controller:** exposes catalog, dashboard, quantity-update, and movement-history endpoints; validates requests and returns HTTP responses.
+- **Service:** lists items in name order, rejects duplicate names without case sensitivity, saves valid items, calculates low-stock data, updates stock quantities, and records stock movements.
+- **Repository:** uses Spring Data JPA to query and save `Item` and `StockMovement` records.
 - **MySQL:** stores item data beyond the lifetime of the application process.
 - **DTOs:** define the JSON request and response shapes independently of the persistence entity.
 
 ## Catalog flows
 
-The product page loads the catalog with `GET /api/items`. To create an item, the client sends a name, optional description, and starting quantity as JSON to `POST /api/items`. Inventory stock is set with `PUT /api/items/{id}/quantity` and a non-negative whole number.
+The product page loads the catalog with `GET /api/items`. To create an item, the client sends a name, optional description, starting quantity, and reorder level as JSON to `POST /api/items`. Inventory stock is set with `PUT /api/items/{id}/quantity` and a non-negative whole number; changed quantities create a timestamped movement record. The overview page loads `GET /api/dashboard` for live metrics, low-stock products, and recent activity.
 
 1. Jakarta Bean Validation rejects a blank name.
 2. The service checks for an existing name.

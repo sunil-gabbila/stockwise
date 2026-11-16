@@ -23,13 +23,21 @@ public class Item {
     @Column(nullable = false)
     private int quantity;
 
+    @Column(nullable = false)
+    private int reorderLevel;
+
     protected Item() {
     }
 
     public Item(String name, String description, int quantity) {
+        this(name, description, quantity, 0);
+    }
+
+    public Item(String name, String description, int quantity, int reorderLevel) {
         this.name = name;
         this.description = description;
         this.quantity = quantity;
+        this.reorderLevel = reorderLevel;
     }
 
     public Long getId() {
@@ -50,5 +58,9 @@ public class Item {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public int getReorderLevel() {
+        return reorderLevel;
     }
 }
